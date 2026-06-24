@@ -32,6 +32,7 @@ resource "aws_route" "public_peering" {
 
 
 resource "aws_route" "private_peering" {
+    count = var.is_peering_required ? 1 : 0
   route_table_id            = aws_route_table.private.id
   destination_cidr_block    = data.aws_vpc.default.cidr_block
   #vpc_peering_connection_id = "pcx-45ff3dc1"
@@ -39,6 +40,7 @@ resource "aws_route" "private_peering" {
 }
 
 resource "aws_route" "database_peering" {
+    count = var.is_peering_required ? 1 : 0
   route_table_id            = aws_route_table.database.id
   destination_cidr_block    = data.aws_vpc.default.cidr_block
   #vpc_peering_connection_id = "pcx-45ff3dc1"
@@ -47,8 +49,8 @@ resource "aws_route" "database_peering" {
 
 resource "aws_route" "default" {
   count = var.is_peering_required ? 1 : 0
-  route_table_id            = data.aws_route_table.default.id
+  route_table_id            = data.aws_route_table.default_vpc_route_table.id #defined in data.tf
   destination_cidr_block    = var.vpc_cidr
-  vpc_peering_connection_id = aws_vpc_peering_connection.default[count.index].id
+  vpc_peering_connection_id = aws_vpc_peering_connection.default_vpc[count.index].id #thsis gives vpc peering connection id
 }
 
