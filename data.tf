@@ -5,3 +5,7 @@ data "aws_availability_zones" "available" {
 data "aws_vpc" "default" {
   default = true
 }
+
+data "aws_route_table" "default_vpc_route_table" {
+  route_table_id = data.aws_vpc.default.main_route_table_id
+}
