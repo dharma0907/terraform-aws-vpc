@@ -12,6 +12,8 @@ resource "aws_internet_gateway" "gw" {
 }
 
 # we are creating two subents one in us-eat1a nd 1b
+# us-east-1a and us-east-1b
+# roboshop-dev-public-1a, roboshop-dev-public-1b
 resource "aws_subnet" "public_subnet" {
   count = length(var.public_subnet)  
   vpc_id     = aws_vpc.main.id
@@ -23,7 +25,7 @@ resource "aws_subnet" "public_subnet" {
 
   tags = merge(var.public_subnet_tags, local.common_tags, 
   {
-  Name = "${local.common_name}-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
+  Name = "${local.common_name}-public-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
   # split function is used for dividing the value by , : - for string
   }
   )
@@ -41,7 +43,7 @@ resource "aws_subnet" "private_subnet" {
 
   tags = merge(var.private_subnet_tags, local.common_tags, 
   {
-  Name = "${local.common_name}-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
+  Name = "${local.common_name}-private-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
   # split function is used for dividing the value by , : - for string
   }
   )
@@ -58,7 +60,7 @@ resource "aws_subnet" "database_subnet" {
 
   tags = merge(var.database_subnet_tags, local.common_tags, 
   {
-  Name = "${local.common_name}-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
+  Name = "${local.common_name}-database-${split("-", local.az_names[count.index])[2]}" #roboshop-dev-1a,roboshop-dev-1b
   # split function is used for dividing the value by , : - for string
   }
   )
@@ -89,7 +91,7 @@ resource "aws_route_table" "private" {
       var.private_route_table_tags,
       local.common_tags,
       {
-        Name = "${local.common_name}-public"
+        Name = "${local.common_name}-private"
       }
 
   )
@@ -104,7 +106,7 @@ resource "aws_route_table" "database" {
       var.private_route_table_tags,
       local.common_tags,
       {
-        Name = "${local.common_name}-public"
+        Name = "${local.common_name}-database"
       }
 
   )
